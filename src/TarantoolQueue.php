@@ -44,11 +44,8 @@ class TarantoolQueue implements QueueInterface
     public function take($timeout = null)
     {
         $args = null === $timeout ? [] : [$timeout];
-        try {
-            return $this->resultTask('take', $args);
-        } catch (\Tarantool\Client\Exception\Exception $e) {
-            return null;
-        }
+
+        return $this->resultTask('take', $args);
     }
 
     /**
@@ -101,7 +98,7 @@ class TarantoolQueue implements QueueInterface
      */
     public function kick($count)
     {
-        return $this->command('kick', [$count])[0];
+        return $this->command('kick', [$count])[0][0];
     }
 
     /**
@@ -128,7 +125,7 @@ class TarantoolQueue implements QueueInterface
      */
     public function stats($path = null)
     {
-        $result = $this->command('queue.stats', [$this->name]);
+        $result = $this->command('queue.stats', [$this->name])[0];
 
         if (null === $path) {
             return $result[0];
@@ -173,7 +170,9 @@ class TarantoolQueue implements QueueInterface
      */
     private function command($command, $args = null)
     {
-        return $this->client->call("queue.tube.$this->name:" . $command, $args)->getData()[0];
+        $result = $this->client->call("queue.tube.$this->name:" . $command, $args)->getData();
+
+        return $result;
     }
 
     /**
@@ -183,7 +182,9 @@ class TarantoolQueue implements QueueInterface
      */
     private function resultTask($command, $args = null)
     {
-        return Task::createFromTuple($this->command($command, $args));
+        $result = $this->command($command, $args);
+
+        return empty($result) ? null : Task::createFromTuple($result[0]);
     }
 
     /**
