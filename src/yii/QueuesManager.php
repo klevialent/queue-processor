@@ -30,9 +30,13 @@ class QueuesManager extends \yii\base\Component
     public function __get($name)
     {
         if (in_array($name, $this->queues)) {
-            return $this->client->getQueue($name);
+            $queueName = $name;
+        } else if (array_key_exists($name, $this->queues)) {
+            $queueName = array_key_exists('queue', $this->queues[$name]) ? $this->queues[$name]['queue'] : $name;
+        } else {
+            return parent::__get($name);
         }
 
-        return parent::__get($name);
+        return $this->client->getQueue($queueName);
     }
 }
