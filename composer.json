@@ -12,6 +12,7 @@
     "tarantool/client": "^0.2.0"
   },
   "require-dev": {
+    "phpunit/phpunit": "^6"
   },
   "autoload": {
     "psr-4": {
