@@ -1,145 +1,34 @@
 <?php
 
-namespace tucibi\tarantoolQueuePhp;
+namespace Tucibi\TarantoolQueuePhpExtended;
 
+use Tarantool\Client\Client as TarantoolClient;
 use Tarantool\Queue\Task;
 
-class TarantoolQueue implements QueueInterface
+
+class TarantoolQueue extends \Tarantool\Queue\Queue implements QueueInterface
 {
+    /**
+     * @param TarantoolClient $client
+     * @param string $name
+     * @param WorkerInterface[] $workers
+     */
+    public function __construct($client, $name, $workers = [])
+    {
+        parent::__construct($client, $name);
+
+        $this->client = $client;
+        $this->workers = $workers;
+    }
+
     /**
      * @inheritdoc
      */
-    public function __construct($name, ClientInterface $client)
+    public function process()
     {
-        $this->client = $client;
-        $this->name = $name;
-    }
-
-    /**
-     * @return ClientInterface
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * @param mixed      $data
-     * @param array|null $options
-     *
-     * @return Task
-     */
-    public function put($data, array $options = null)
-    {
-        $args = $options ? [$data, $options] : [$data];
-
-        return $this->resultTask('put', $args);
-    }
-
-    /**
-     * @param int|float|null $timeout
-     *
-     * @return Task|null
-     */
-    public function take($timeout = null)
-    {
-        $args = null === $timeout ? [] : [$timeout];
-
-        return $this->resultTask('take', $args);
-    }
-
-    /**
-     * @param int $taskId
-     *
-     * @return Task
-     */
-    public function ack($taskId)
-    {
-        return $this->resultTask('ack', [$taskId]);
-    }
-
-    /**
-     * @param int        $taskId
-     * @param array|null $options
-     *
-     * @return Task
-     */
-    public function release($taskId, array $options = null)
-    {
-        $args = $options ? [$taskId, $options] : [$taskId];
-
-        return $this->resultTask('release', $args);
-    }
-
-    /**
-     * @param int $taskId
-     *
-     * @return Task
-     */
-    public function peek($taskId)
-    {
-        return $this->resultTask('peek', [$taskId]);
-    }
-
-    /**
-     * @param int $taskId
-     *
-     * @return Task
-     */
-    public function bury($taskId)
-    {
-        return $this->resultTask('bury', [$taskId]);
-    }
-
-    /**
-     * @param int $count
-     *
-     * @return int
-     */
-    public function kick($count)
-    {
-        return $this->command('kick', [$count])[0][0];
-    }
-
-    /**
-     * @param int $taskId
-     *
-     * @return Task
-     */
-    public function delete($taskId)
-    {
-        return $this->resultTask('delete', [$taskId]);
-    }
-
-    public function truncate()
-    {
-        $this->command('truncate');
-    }
-
-    /**
-     * @param string|null $path
-     *
-     * @return array|int
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function stats($path = null)
-    {
-        $result = $this->command('queue.stats', [$this->name])[0];
-
-        if (null === $path) {
-            return $result[0];
+        foreach ($this->workers as $worker) {
+            $worker->action($this->fetchTasks(self::DEFAULT_COUNT_TASKS));
         }
-
-        $result = $result[0];
-        foreach (explode('.', $path) as $key) {
-            if (!isset($result[$key])) {
-                throw new \InvalidArgumentException(sprintf('Invalid path "%s".', $path));
-            }
-            $result = $result[$key];
-        }
-
-        return $result;
     }
 
     /**
@@ -163,34 +52,18 @@ class TarantoolQueue implements QueueInterface
         return $tasks;
     }
 
-    /**
-     * @param string $command
-     * @param array $args
-     * @return array
-     */
-    private function command($command, $args = null)
-    {
-        $result = $this->client->call("queue.tube.$this->name:" . $command, $args)->getData();
-
-        return $result;
-    }
 
     /**
-     * @param string $command
-     * @param array $args
-     * @return Task
+     * @var TarantoolClient
      */
-    private function resultTask($command, $args = null)
-    {
-        $result = $this->command($command, $args);
-
-        return empty($result) ? null : Task::createFromTuple($result[0]);
-    }
+    protected $client;
 
     /**
-     * @var ClientInterface
+     * @var WorkerInterface[]
      */
-    private $client;
-    
-    private $name;
+    private $workers;
+
+
+    //todo configurable
+    const DEFAULT_COUNT_TASKS = 10;
 }

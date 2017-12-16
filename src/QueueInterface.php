@@ -1,17 +1,12 @@
 <?php
 
-namespace tucibi\tarantoolQueuePhp;
+namespace Tucibi\TarantoolQueuePhpExtended;
+
 
 interface QueueInterface
 {
     /**
-     * @param string $name
-     * @param ClientInterface $client
+     * Fetch some tasks and do it
      */
-    public function __construct($name, ClientInterface $client);
-
-    /**
-     * @return ClientInterface
-     */
-    public function getClient();
+    public function process();
 }

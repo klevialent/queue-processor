@@ -1,8 +1,12 @@
 <?php
 
-namespace tucibi\tarantoolQueuePhp;
+namespace Tucibi\TarantoolQueuePhpExtended;
+
 
 interface WorkerInterface
 {
-    public function process();
+    /**
+     * @param \Tarantool\Queue\Task[] $tasks
+     */
+    public function action($tasks);
 }
