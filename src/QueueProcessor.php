@@ -2,47 +2,41 @@
 
 namespace Tucibi\TarantoolQueuePhpExtended;
 
-use Tarantool\Client\Client as TarantoolClient;
-use Tarantool\Client\Connection\Retryable;
-use Tarantool\Client\Connection\StreamConnection;
-use Tarantool\Client\Packer\PurePacker;
-
 
 class QueueProcessor
 {
     /**
-     * @param array $config - Queue name(s) and Workers
+     * @param QueueInterface $queue
+     * @param WorkerInterface[] $workers
      */
-    public function __construct($config)
+    public function __construct($queue, $workers = [])
     {
-        foreach ($config as $queueName => $workers) {
-
-            //todo exceptions
-            //todo add to configuration
-
-            $this->queues[] = new TarantoolQueue(
-                new TarantoolClient(
-                    new Retryable(new StreamConnection()),
-                    new PurePacker()
-                ),
-                $queueName,
-                $workers
-            );
-        }
+        $this->queue = $queue;
+        $this->workers = $workers;
     }
 
     /**
-     * Run processing all registered queues
+     * @inheritdoc
      */
-    public function run()
+    public function process()
     {
-        foreach ($this->queues as $queue) {
-            $queue->process();
+        foreach ($this->workers as $worker) {
+            $worker->action($this->queue->fetchTasks(self::DEFAULT_COUNT_TASKS));
         }
     }
 
+
     /**
-     * @var QueueInterface[]
+     * @var QueueInterface
      */
-    private $queues;
+    private $queue;
+
+    /**
+     * @var WorkerInterface[]
+     */
+    private $workers;
+
+
+    //todo configurable
+    const DEFAULT_COUNT_TASKS = 10;
 }

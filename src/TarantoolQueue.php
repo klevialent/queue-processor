@@ -11,24 +11,12 @@ class TarantoolQueue extends \Tarantool\Queue\Queue implements QueueInterface
     /**
      * @param TarantoolClient $client
      * @param string $name
-     * @param WorkerInterface[] $workers
      */
-    public function __construct($client, $name, $workers = [])
+    public function __construct($client, $name)
     {
         parent::__construct($client, $name);
 
         $this->client = $client;
-        $this->workers = $workers;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function process()
-    {
-        foreach ($this->workers as $worker) {
-            $worker->action($this->fetchTasks(self::DEFAULT_COUNT_TASKS));
-        }
     }
 
     /**
@@ -57,11 +45,6 @@ class TarantoolQueue extends \Tarantool\Queue\Queue implements QueueInterface
      * @var TarantoolClient
      */
     protected $client;
-
-    /**
-     * @var WorkerInterface[]
-     */
-    private $workers;
 
 
     //todo configurable
