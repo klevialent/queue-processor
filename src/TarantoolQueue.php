@@ -1,6 +1,6 @@
 <?php
 
-namespace Tucibi\TarantoolQueuePhpExtended;
+namespace Klevialent\QueueProcessor;
 
 use Tarantool\Client\Client as TarantoolClient;
 use Tarantool\Queue\Task;

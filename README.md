@@ -15,7 +15,7 @@ Lua modules, called [LuaRocks](https://luarocks.org/). This package provides PHP
 The recommended way to install the library is through [Composer](http://getcomposer.org):
 
 ```sh
-$ composer require tucibi/tarantool-queue-php
+$ composer require Klevialent/queue-processor
 ```
 
 QueueProcessController compatible only with yii2, and if you want to use it:
@@ -68,7 +68,7 @@ Implement method process() of WorkerInterface and run it as demon.<br>If you use
 ```
 //add to config
     'controllerMap' => [
-        'queue-process' => WebDevTeam\TarantoolQueuePhp\QueueProcessController::className(),
+        'queue-process' => Klevialent\QueueProcessor\QueueProcessController::className(),
     ],
 
 //console command

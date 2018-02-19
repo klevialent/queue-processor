@@ -1,6 +1,6 @@
 <?php
 
-namespace Tucibi\TarantoolQueuePhpExtended;
+namespace Klevialent\QueueProcessor;
 
 
 interface WorkerInterface

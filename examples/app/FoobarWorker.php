@@ -1,8 +1,8 @@
 <?php
 
-namespace Tucibi\TarantoolQueuePhpExtended\Examples\App;
+namespace Klevialent\QueueProcessor\Examples\App;
 
-use Tucibi\TarantoolQueuePhpExtended\WorkerInterface;
+use Klevialent\QueueProcessor\WorkerInterface;
 
 
 class FoobarWorker implements WorkerInterface

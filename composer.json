@@ -1,5 +1,5 @@
 {
-  "name": "tucibi/tarantool-queue-php",
+  "name": "klevialent/queue-processor",
   "description": "tarantool queue php",
   "keywords": ["tarantool queue php"],
   "type": "project",
@@ -16,8 +16,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Tucibi\\TarantoolQueuePhpExtended\\": "src",
-      "Tucibi\\TarantoolQueuePhpExtended\\Examples\\App\\": "examples/app"
+      "Klevialent\\QueueProcessor\\": "src",
+      "Klevialent\\QueueProcessor\\Examples\\App\\": "examples/app"
     }
   },
   "config": {

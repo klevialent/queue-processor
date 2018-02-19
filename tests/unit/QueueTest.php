@@ -1,6 +1,6 @@
 <?php
 
-namespace Tucibi\Tests\Unit;
+namespace Klevialent\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 

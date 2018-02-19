@@ -1,7 +1,7 @@
 <?php
 
-use Tucibi\TarantoolQueuePhpExtended\QueuesProcessing;
-use Tucibi\TarantoolQueuePhpExtended\Examples\App\FoobarWorker;
+use Klevialent\QueueProcessor\QueuesProcessing;
+use Klevialent\QueueProcessor\Examples\App\FoobarWorker;
 
 require(__DIR__ . '/../../vendor/autoload.php');
 

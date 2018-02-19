@@ -4,11 +4,11 @@ $config = [
     'controllerMap' => [
         
         //minimal
-        'queue-process' => \tucibi\tarantoolQueuePhp\yii\QueueProcessController::className(),
+        'queue-process' => \Klevialent\QueueProcessor\yii\QueueProcessController::className(),
         
         //extended with defaults
         'queue-process-changed-namespace' => [
-            'class' => \tucibi\tarantoolQueuePhp\yii\QueueProcessController::className(),
+            'class' => \Klevialent\QueueProcessor\yii\QueueProcessController::className(),
             'queuesNamespace' => '\\console\\workers'
         ]
         

@@ -1,12 +1,12 @@
 <?php
 
-namespace tucibi\tarantoolQueuePhp\yii;
+namespace Klevialent\QueueProcessor\yii;
 
 use yii;
 use yii\base\Object;
-use tucibi\tarantoolQueuePhp\QueueInterface;
-use tucibi\tarantoolQueuePhp\ClientInterface;
-use tucibi\tarantoolQueuePhp\WorkerInterface;
+use Klevialent\QueueProcessor\QueueInterface;
+use Klevialent\QueueProcessor\ClientInterface;
+use Klevialent\QueueProcessor\WorkerInterface;
 
 /**
  * @property string $queueName
