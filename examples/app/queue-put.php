@@ -10,7 +10,7 @@ require(__DIR__ . '/../../vendor/autoload.php');
 
 $queue = new TarantoolQueue(
     new TarantoolClient(
-        new StreamConnection(),
+        new StreamConnection('tcp://tarantool:3302'),
         new PurePacker()
     ),
     'foobar');

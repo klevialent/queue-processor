@@ -1,0 +1,18 @@
+version: '3.5'
+services:
+  tarantool:
+    image: tarantool/tarantool
+    container_name: tarantool
+    volumes:
+      - /projects/queue-processor/examples/app/config/tarantool:/opt/tarantool
+    command: tarantool /opt/tarantool/queues.lua
+    ports:
+      - 3302:3302
+  php:
+    image: klevialent/queue-processor
+    container_name: qp
+    tty: true
+    volumes:
+      - /projects/queue-processor:/app
+    depends_on:
+      - tarantool
