@@ -2,51 +2,26 @@
 
 namespace Klevialent\QueueProcessor;
 
-use Tarantool\Client\Client as TarantoolClient;
-use Tarantool\Queue\Task;
+use Tarantool\Client\Exception\ConnectionException;
+use Tarantool\Queue\Queue;
 
 
-class TarantoolQueue extends \Tarantool\Queue\Queue implements QueueInterface
+class TarantoolQueue extends Queue implements QueueInterface
 {
     /**
-     * @param TarantoolClient $client
-     * @param string $name
+     * @inheritdoc
      */
-    public function __construct($client, $name)
+    public function take($timeout = null)
     {
-        parent::__construct($client, $name);
+        try {
+            return parent::take($timeout);
+        } catch (ConnectionException $e) {
+            //this exception thrown when queue has no tasks
+            if ($e->getMessage() === 'Read timed out.') {
+                return null;
+            }
 
-        $this->client = $client;
-    }
-
-    /**
-     * @param int $limit
-     *
-     * @return Task[]
-     */
-    public function fetchTasks($limit)
-    {
-        $this->client->connect();
-        $tasks = [];
-        while ($limit > 0) {
-            if (! ($task = $this->take())) break;
-
-            $tasks[] = $task;
-            $limit--;
+            throw $e;
         }
-
-        $this->client->disconnect();
-
-        return $tasks;
     }
-
-
-    /**
-     * @var TarantoolClient
-     */
-    protected $client;
-
-
-    //todo configurable
-    const DEFAULT_COUNT_TASKS = 10;
 }

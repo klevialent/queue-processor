@@ -3,7 +3,6 @@
 namespace Klevialent\QueueProcessor;
 
 use Tarantool\Client\Client as TarantoolClient;
-use Tarantool\Client\Connection\Retryable;
 use Tarantool\Client\Connection\StreamConnection;
 use Tarantool\Client\Packer\PurePacker;
 
@@ -11,19 +10,24 @@ use Tarantool\Client\Packer\PurePacker;
 class QueuesProcessing
 {
     /**
-     * @param array $config - Queue names and Workers
+     * @param array $config
      */
     public function __construct($config)
     {
-        foreach ($config as $queueName => $workers) {
+        foreach ($config as $queueName => $options) {
 
-            //todo exceptions
-            //todo add to configuration
+            if (is_array($options)) {
+                $uri = array_key_exists('uri', $options) ? $options['uri'] : null;
+                $workers = $options['workers'];
+            } else {
+                $uri = null;
+                $workers = $options;
+            }
 
             $this->queueProcessors[] = new QueueProcessor(
                 new TarantoolQueue(
                     new TarantoolClient(
-                        new Retryable(new StreamConnection()),
+                        new StreamConnection($uri),
                         new PurePacker()
                     ),
                     $queueName

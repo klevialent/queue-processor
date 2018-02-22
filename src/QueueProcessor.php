@@ -20,8 +20,23 @@ class QueueProcessor
      */
     public function process()
     {
+        echo 'Run processing queue ' . $this->queue->getName() . '.' . PHP_EOL;
         foreach ($this->workers as $worker) {
-            $worker->action($this->queue->fetchTasks(self::DEFAULT_COUNT_TASKS));
+            echo 'Run worker ' . get_class($worker) . '.' . PHP_EOL;
+            while (true) {
+                $task = $this->queue->take();
+                if (empty($task)) {
+                    echo 'Queue has no ready tasks. Sleep ' . self::DEFAULT_RETRY_TIMEOUT . ' seconds.'. PHP_EOL;
+                    sleep(self::DEFAULT_RETRY_TIMEOUT);
+                    continue;
+                }
+
+                if ($success = $worker->action($task)) {
+                    $this->queue->ack($task->getId());
+                } else {
+                    $this->queue->release($task->getId(), ['delay' => self::DEFAULT_TASK_EXECUTION_DELAY]);
+                }
+            }
         }
     }
 
@@ -38,5 +53,8 @@ class QueueProcessor
 
 
     //todo configurable
-    const DEFAULT_COUNT_TASKS = 10;
+
+    const DEFAULT_RETRY_TIMEOUT = 10;
+
+    const DEFAULT_TASK_EXECUTION_DELAY = 10;
 }

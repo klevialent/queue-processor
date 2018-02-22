@@ -17,5 +17,5 @@ $queue = new TarantoolQueue(
 
 for ($i = 0; $i < 11; $i++) {
     $task = $queue->put(["data#$i", rand(100, 999)]);
-    echo "Task #{$task->getId()} added to the queue {$queue->getName()}" . PHP_EOL;
+    echo "Task #{$task->getId()} added to the queue {$queue->getName()}." . PHP_EOL;
 }

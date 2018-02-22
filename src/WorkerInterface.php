@@ -6,7 +6,9 @@ namespace Klevialent\QueueProcessor;
 interface WorkerInterface
 {
     /**
-     * @param \Tarantool\Queue\Task[] $tasks
+     * @param \Tarantool\Queue\Task $task
+     *
+     * @return bool - result of task execution
      */
-    public function action($tasks);
+    public function action($task) : bool;
 }
