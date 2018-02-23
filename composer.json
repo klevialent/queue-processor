@@ -12,12 +12,17 @@
     "rybakit/msgpack": "^0.2.2"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6"
+    "phpunit/phpunit": "^6.5"
   },
   "autoload": {
     "psr-4": {
       "Klevialent\\QueueProcessor\\": "src",
       "Klevialent\\QueueProcessor\\Examples\\App\\": "examples/app"
+    }
+  },
+  "autoload-dev" : {
+    "psr-4": {
+      "Klevialent\\QueueProcessor\\Tests\\": "tests/"
     }
   },
   "config": {
