@@ -28,7 +28,7 @@ class TarantoolQueue extends Queue implements QueueInterface
         try {
             return parent::take($timeout);
         } catch (ConnectionException $e) {
-            //this exception thrown when queue has no tasks
+            //this exception thrown when queue has no ready tasks
             if ($e->getMessage() === 'Read timed out.') {
                 return null;
             }
