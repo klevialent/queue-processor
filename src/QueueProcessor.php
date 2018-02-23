@@ -28,6 +28,7 @@ class QueueProcessor
                 if (empty($task)) {
                     echo 'Queue has no ready tasks. Sleep ' . self::DEFAULT_RETRY_TIMEOUT . ' seconds.'. PHP_EOL;
                     sleep(self::DEFAULT_RETRY_TIMEOUT);
+                    $this->queue->clientDisconnect();
                     continue;
                 }
 

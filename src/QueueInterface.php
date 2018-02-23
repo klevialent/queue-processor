@@ -41,4 +41,9 @@ interface QueueInterface
      * @return Task
      */
     public function release($taskId, array $options = []);
+
+    /**
+     * close client connection
+     */
+    public function clientDisconnect();
 }

@@ -2,12 +2,24 @@
 
 namespace Klevialent\QueueProcessor;
 
+use Tarantool\Client\Client as TarantoolClient;
 use Tarantool\Client\Exception\ConnectionException;
 use Tarantool\Queue\Queue;
 
 
 class TarantoolQueue extends Queue implements QueueInterface
 {
+    /**
+     * @param TarantoolClient $client
+     * @param string $name
+     */
+    public function __construct($client, $name)
+    {
+        parent::__construct($client, $name);
+
+        $this->client = $client;
+    }
+
     /**
      * @inheritdoc
      */
@@ -24,4 +36,14 @@ class TarantoolQueue extends Queue implements QueueInterface
             throw $e;
         }
     }
+
+    public function clientDisconnect()
+    {
+        $this->client->disconnect();
+    }
+
+    /**
+     * @var TarantoolClient
+     */
+    protected $client;
 }
